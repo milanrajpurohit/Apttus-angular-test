@@ -1,0 +1,139 @@
+<div class="row">
+  <div class="col-md-4">
+    <h3>User Management</h3>
+  </div>
+  <div class="col-md-8">
+    <div class="button-continer text-right">
+        <button type="button" class="btn btn-primary" [routerLink]="['/main/users/user-detail','new']" ><i class="mdi mdi-plus"></i> Add User</button>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+
+  <div class="animated fadeInUp table-responsive">
+   <div class="col-2 offset-md-10">
+     <input type="text" class="form-control search-box" name="searchText" [(ngModel)]="searchText" placeholder="Search Text...">
+     <span class="table-search-icon"><i class="mdi mdi-magnify"></i></span>
+   </div>
+   <!-- Search input end -->
+   <label>Advanced Search</label>
+   <mat-form-field>
+    <mat-select placeholder="Column Name" (change)="onSelectChanged($event.value)" multiple>
+      <mat-option *ngFor="let col of columns" [value]="col.value">
+        {{ col.value }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <form  (ngSubmit)="applyFilter(final)">
+    <table>
+      <tr *ngFor="let column of columnName; index as i">
+        <span>{{column}}</span>
+        Let Oper = {{ final[i].operator }}
+        <td>   
+          <mat-form-field>  
+
+            <mat-select name="condition" placeholder="Choose a condition" (change)="onSelectChangedCondition($event.value,i)" [value]="final[i].operator">
+              <mat-option *ngFor="let cn of condition" [value]="cn.value">
+                {{ cn.value }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+        <td>
+          <div *ngIf="column == 'startDate' ">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker2" placeholder="Choose a date" name="filterDate" [(ngModel)]="final[i]['value']">
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2 name="filterDate"  ngDefaultControl (selectedChanged)="onDate($event)" [(ngModel)]="final[i]['value']"></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="filterRow" *ngIf="column == 'value'">
+            <input type="number" class="form-control" name="value" placeholder="Enter Value"  [(ngModel)]="final[i]['value']" >
+          </div>
+          <div *ngIf="column == 'name'">
+            <form class="example-form">
+              <mat-form-field class="example-full-width">
+                <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto" [(ngModel)]="final[i].value">
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getNames($event.option.value)'>
+                  <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{ option }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </form>
+
+          </div>
+          <div class="form-group row" *ngIf="column == 'status'">
+            <label class="col-sm-5 col-form-label">Status</label>
+            <select  class="form-control-small"
+            ng-model="filterArray.value" (change)="onStatusChange($event,i)" name="value" style="margin-left: 11px;" [value]="final[i].value">
+            <option value="Renewed">Renewed</option>
+            <option value="Active">Active</option>
+            <option value="Ammended">Ammended</option>
+          </select>
+        </div>
+      </td>
+      <td>
+        <a href="javascript:;" title="Delete" (click)="deleteUserRow(i)"><i class="mdi mdi-delete"></i></a>
+      </td>
+    </tr>
+
+    <tbody>
+    </tbody>
+  </table>
+
+      <button class='btn btn-block btn-warning btn-lg font-weight-medium' type="submit" *ngIf="columnName?.length > 0">Search </button>
+    
+
+</form>
+<table sortable-table (sorted)="onSorted($event)" class="table dataTable with-image row-border hover custom-table">
+  <thead>
+    <tr>
+      <th></th>
+      <th sortable-column="name" object-name="">name</th>
+      <th sortable-column="startDate" object-name="">startDate</th>
+      <th sortable-column="endDate" object-name="">endDate</th>
+      <th sortable-column="value" object-name="">value</th>
+      <th sortable-column="status">Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let i of userArr | sortBy : sortField | filter : searchText">
+      <td>
+        <div class="thumb-img">
+          <img [src]="i.photo ? baseUrl+'public/uploads/'+i.photo : 'assets/images/no-image-user.png'">
+        </div>
+      </td>
+      <td>{{i.name}}</td>
+      <td>{{i.startDate | date}}</td>
+      <td>{{i.endDate  | date}}</td>
+      <td>{{i.value }}</td>
+      <td>{{i.status}}</td>
+
+      <td>
+        <div class="delete-icon">
+          <a href="javascript:;" title="Delete" (click)="deleteAgreement(i)"><i class="mdi mdi-delete"></i></a>
+          <a href="javascript:;" title="Edit" [routerLink]="['/main/users/user-detail',i._id]"><i class="mdi mdi-pencil"></i></a>
+        </div>
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+<div *ngIf="userArr.length && !(userArr | filter : searchText).length" class="record-not-found">
+  <label class="label danger">No matches found!</label>
+</div>
+
+<div *ngIf="!userArr.length" class="record-not-found">
+  <label class="label danger">No records found!</label>
+</div>
+
+</div>
+
+
+

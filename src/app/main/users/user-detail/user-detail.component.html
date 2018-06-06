@@ -1,0 +1,73 @@
+<div class="card animated fadeInUp">
+	<div class="card-body">
+		<h4 class="card-title" *ngIf="isNew">Add New User</h4>
+		<h4 class="card-title" *ngIf="!isNew">Edit User Detail</h4>
+		<div class="card-center-block">
+			<hr>
+			<form class="form-sample" #userForm='ngForm' (ngSubmit)='submitForm(userForm)'> 
+
+
+				<div class="form-group row">
+					<label class="col-sm-5 col-form-label">Name</label>
+					<div class="col-sm-7">
+						<input class='form-control' type="text" name="name" [(ngModel)]="user.name" placeholder="Enter First Name" id="firstname" required #name="ngModel"/>
+						<div class="error-block" *ngIf="((submitted || name.touched) && name.invalid)">
+							{{showError('name', name.errors)}}
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-5 col-form-label">Start Date</label>
+					<div class="col-sm-7">
+						<mat-form-field>
+							<input matInput [matDatepicker]="picker" placeholder="Choose a date" name="startDate" [(ngModel)]="user.startDate">
+							<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+							<mat-datepicker #picker name="startDate" [(ngModel)]="user.startDate" ngDefaultControl (selectedChanged)="onDate($event)"></mat-datepicker>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-5 col-form-label">End Date</label>
+					<div class="col-sm-7">
+						<mat-form-field>
+							<input matInput [matDatepicker]="picker2" placeholder="Choose a date" name="endDate" [(ngModel)]="user.endDate">
+							<mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+							<mat-datepicker #picker2 name="endDate" [(ngModel)]="user.endDate" ngDefaultControl (selectedChanged)="onDateSecond($event)"></mat-datepicker>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-5 col-form-label">Value</label>
+					<div class="col-sm-7">
+						<input class='form-control' type="number" name="mobile" [(ngModel)]="user.value" placeholder="Enter value No." id="value" required #value="ngModel"/>
+						<div class="error-block" *ngIf="((submitted || value.touched) && value.invalid)">
+							{{showError('value', value.errors)}}
+						</div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-5 col-form-label">Status</label>
+					<select  class="form-control-small"
+					ng-model="user.status" (change)="onChange($event)" style="margin-left: 11px;">
+					<option value="Renewed">Renewed</option>
+					<option value="Active">Active</option>
+					<option value="Ammended">Ammended</option>
+				</select>
+			</div>
+
+			<hr>
+
+			<div class="form-group row">
+				<div class="button-group-container">
+					<button type="submit" class="btn btn-primary">
+						<span>Submit</span>
+					</button>
+					<button type="button" class="btn btn-warning" [routerLink]="['/main/users']">Cancel</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+</div>

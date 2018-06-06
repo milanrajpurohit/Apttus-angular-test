@@ -1,0 +1,10 @@
+.filterRow{
+	width:13%;
+	display: inherit;
+}
+
+.btn-block{
+	width: 240px;
+	margin-bottom: 25px;
+	float: right;
+}
